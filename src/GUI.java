@@ -2,13 +2,18 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
-public class GUI extends JFrame {
+public class GUI {
 
 //Declaring the base variables (more to be added of course)
 
+    private JFrame gui;
+
+    Action rightAction;
+    Action leftAction;
+    Action upAction;
+    Action downAction;
     private JLabel title;
-    private JLabel rng;
-    private JButton button;
+    private JButton startButton;
     private JPanel panel;
 
 //Default constructor
@@ -17,47 +22,51 @@ public GUI() {
 
 //Initializing components (JButton, JLabel and JPanel)
 
-    button = new JButton();
-        button.setText("Start");
-        button.setToolTipText("Hello there!");
+    startButton = new JButton();
+        startButton.setText("Start");
+        startButton.setToolTipText("Hello there!");
        //Sets the action listener of button to ButtonHandler (a class found later on)
-        button.addActionListener(new ButtonHandler());
-        button.setBounds(250,350,100,50);
+        startButton.addActionListener(new ButtonHandler());
+        startButton.setActionCommand("start");
+        startButton.setBounds(250,350,100,50);
     title = new JLabel();
         title.setText("Javapillar");
         title.setFont(new Font("Arial", Font.PLAIN, 58));
         title.setBounds(175,100,250,100);
-    rng = new JLabel();
-        rng.setBounds(288,300,75,25);
-        rng.setFont(new Font("Arial", Font.PLAIN, 24));
     panel = new JPanel();
         panel.setLayout(null);
+    gui = new JFrame();
 
 //Sets the details of the JFrame
 
-    setSize(600,500);
-    setDefaultCloseOperation(EXIT_ON_CLOSE);
-    setVisible(true);
-    setTitle("Javapillar");
+    gui.setSize(600,500);
+    gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    gui.setVisible(true);
+    gui.setTitle("Javapillar");
 
 //Adding previous components to panel
 
-    panel.add(button);
+    panel.add(startButton);
     panel.add(title);
-    panel.add(rng);
+    panel.setBorder(BorderFactory.createLineBorder(Color.black));
 
 //Adding panel to JFrame (since the class is extended from JFrame)
 
-    add(panel);
+    gui.add(panel);
 }
 
-//RNG just to test button functionality
+//The button actions are below
 
-private class ButtonHandler implements ActionListener{
+private class ButtonHandler implements ActionListener {
     public void actionPerformed(ActionEvent e) {
-        int random = (int) (1 + Math.random()*100);
-        rng.setText(Integer.toString(random));
-}
+
+        //The action when you press the start button
+        if (e.getActionCommand().equals("start")) {
+            title.setVisible(false);
+            startButton.setVisible(false);
+            gui.add(new Controller());
+        }
+    }
 }
 
 public static void main(String[] args) {
