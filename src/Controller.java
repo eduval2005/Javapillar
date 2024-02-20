@@ -1,6 +1,10 @@
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
+import java.io.File;
+import java.io.IOException;
 
 public class Controller extends JPanel {
         private final int FPS = 5;
@@ -10,11 +14,25 @@ public class Controller extends JPanel {
         private int bearing = 1;
         public JPanel controllerPanel;
         public JLabel caterpillarLabel;
+        private int spritePxls = 32;
+        private ImageIcon icon;
+        private BufferedImage backgroundImage;
+        private int gameAreaX = 600;
+        private int gameAreaY = 500;
         Action rightAction;
         Action leftAction;
         Action upAction;
         Action downAction;
         //private Caterpillar kate;
+
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        if (backgroundImage != null) {
+            g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
+        }
+    }
 
     class LeftAction extends AbstractAction {
         public void actionPerformed(ActionEvent e) {
@@ -45,13 +63,20 @@ public class Controller extends JPanel {
         InputMap input = getInputMap(WHEN_IN_FOCUSED_WINDOW);
         ActionMap action = getActionMap();
 
-        ImageIcon icon = new ImageIcon("Tux.png");
+        icon = new ImageIcon("1.png");
         caterpillarLabel = new JLabel(icon);
             //caterpillarLabel.setBackground(Color.red);
-            caterpillarLabel.setBounds(300,300,64,76);
+            caterpillarLabel.setBounds(300,300, spritePxls, spritePxls);
             caterpillarLabel.setLocation(300,300);
-            caterpillarLabel.setOpaque(true);
+            caterpillarLabel.setOpaque(false);
 
+        // Provide the path to your PNG image
+        String imagePath = "background.png";
+        try {
+            backgroundImage = ImageIO.read(new File(imagePath));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         rightAction = new RightAction();
         leftAction = new LeftAction();
@@ -93,34 +118,40 @@ public class Controller extends JPanel {
         int x = caterpillarLabel.getX();
         int y = caterpillarLabel.getY();
 
+        String numString = Integer.toString(bearing);
+        icon = new ImageIcon(numString + ".png");
+        caterpillarLabel.setIcon(icon);
+
+
+
         switch(bearing){
 
             case 0: //heading NORTH
                 if (y - 10 > 0){                                //check for collision before moving
                     caterpillarLabel.setLocation(x, y - 10);}   //move along the current bearing
                 else {
-                    bearing = (x > 300 ? 3 : 1);}               //if collision is imminent, pick a new bearing
+                    bearing = (x > gameAreaX/2 ? 3 : 1);}               //if collision is imminent, pick a new bearing
                 break;
 
             case 1:
-                if (x + 10 < 540){
+                if (x + 10 < (gameAreaX - spritePxls)){
                     caterpillarLabel.setLocation(x + 10, y);}
                 else {
-                    bearing = (y > 250 ? 0 : 2);}
+                    bearing = (y > gameAreaY/2 ? 0 : 2);}
                 break;
 
             case 2:
-                if (y + 10 < 400){
+                if (y + 10 < (gameAreaY - (spritePxls * 2))){
                     caterpillarLabel.setLocation(x, y + 10);}
                 else {
-                    bearing = (x > 300 ? 3 : 1);}
+                    bearing = (x > gameAreaX/2 ? 3 : 1);}
                 break;
 
             case 3:
                 if (x - 10 > 0){
                     caterpillarLabel.setLocation(x - 10, y);}
                 else {
-                    bearing = (y > 250 ? 0 : 2);}
+                    bearing = (y > gameAreaY/2 ? 0 : 2);}
                 break;
         }
 
