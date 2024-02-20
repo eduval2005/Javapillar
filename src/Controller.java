@@ -89,16 +89,17 @@ public class Controller extends JPanel {
 
     public void animate(){
 
+        //store the location as x and y
         int x = caterpillarLabel.getX();
         int y = caterpillarLabel.getY();
 
         switch(bearing){
 
-            case 0:
-                if (y - 10 > 0){
-                    caterpillarLabel.setLocation(x, y - 10);}
+            case 0: //heading NORTH
+                if (y - 10 > 0){                                //check for collision before moving
+                    caterpillarLabel.setLocation(x, y - 10);}   //move along the current bearing
                 else {
-                    bearing = (x > 300 ? 3 : 1);}
+                    bearing = (x > 300 ? 3 : 1);}               //if collision is imminent, pick a new bearing
                 break;
 
             case 1:
