@@ -37,12 +37,13 @@ public GUI() {
         panel.setLayout(null);
     gui = new JFrame();
 
-//Sets the details of the JFrame
-
+    //Sets the details of the JFrame
+    gui.setResizable(false);
     gui.setSize(600,500);
     gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     gui.setVisible(true);
     gui.setTitle("Javapillar");
+
 
 //Adding previous components to panel
 
