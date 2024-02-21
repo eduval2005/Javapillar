@@ -53,6 +53,7 @@ public class GUI {
         //Sets the details of the JFrame
         gui.setResizable(false);
         gui.setSize(600,500);
+        gui.setLocationRelativeTo(null);
         gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         gui.setVisible(true);
         gui.setTitle("Javapillar");
