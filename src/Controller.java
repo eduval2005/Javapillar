@@ -23,14 +23,31 @@ public class Controller extends JPanel {
         Action leftAction;
         Action upAction;
         Action downAction;
-        //private Caterpillar kate;
-
+        Action pauseAction;
+        Action quitAction;
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         if (backgroundImage != null) {
             g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
+        }
+    }
+
+    class PauseAction extends AbstractAction{
+        public void actionPerformed(ActionEvent e){
+            if (timer.isRunning()){
+                timer.stop();
+            }
+            else{
+                timer.start();
+            }
+        }
+    }
+
+    class QuitAction extends AbstractAction{
+        public void actionPerformed(ActionEvent e){
+            System.exit(0);
         }
     }
 
@@ -78,11 +95,17 @@ public class Controller extends JPanel {
             e.printStackTrace();
         }
 
+        pauseAction = new PauseAction();
+        quitAction = new QuitAction();
         rightAction = new RightAction();
         leftAction = new LeftAction();
         upAction = new UpAction();
         downAction = new DownAction();
 
+            input.put(KeyStroke.getKeyStroke("Q"), "quitAction");
+            action.put("quitAction", quitAction);
+            input.put(KeyStroke.getKeyStroke("P"), "pauseAction");
+            action.put("pauseAction", pauseAction);
             input.put(KeyStroke.getKeyStroke("UP"), "upAction");
             action.put("upAction", upAction);
             input.put(KeyStroke.getKeyStroke("W"), "upAction");

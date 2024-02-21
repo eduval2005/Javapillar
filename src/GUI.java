@@ -41,8 +41,9 @@ public class GUI {
             startButton.setBounds(250,220,100,50);
         title = new JLabel();
             title.setText("Javapillar");
-            title.setFont(new Font("Arial", Font.PLAIN, 58));
-            title.setBounds(175,100,250,100);
+            title.setFont(new Font("Arial", Font.BOLD, 74));
+            title.setForeground(Color.RED);
+            title.setBounds(120,100,375,100);
 
         panel = new splashPanel();
         panel.setLayout(null);
