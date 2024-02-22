@@ -51,8 +51,9 @@ public class GUI {
         gui = new JFrame();
 
         //Sets the details of the JFrame
+        gui.setSize(612,520);
         gui.setResizable(false);
-        gui.setSize(600,510);
+
         gui.setLocationRelativeTo(null);
         gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         gui.setVisible(true);

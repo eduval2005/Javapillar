@@ -22,7 +22,7 @@ public class Controller extends JPanel {
 
         private BufferedImage backgroundImage;
         private int gameAreaX = 600;
-        private int gameAreaY = 500;
+        private int gameAreaY = 510;
 
         public JPanel controllerPanel;
         Action rightAction;
