@@ -30,7 +30,7 @@ public class GUI {
 
     //Initializing components (JButton, JLabel and JPanel)
 
-        playMusic("Intro.wav");
+        playMusic("assets/Intro.wav");
 
         startButton = new JButton();
             startButton.setText("Start");
@@ -77,7 +77,7 @@ public class GUI {
             if (e.getActionCommand().equals("start")) {
                 panel.setVisible(false); //otherwise it sometimes leaves bits on the screen
                 clip.stop();             //stop the intro music or it just keeps playing
-                playMusic("Game.wav");
+                playMusic("assets/Game.wav");
                 gui.add(new Controller());
             }
         }
@@ -93,7 +93,7 @@ public class GUI {
         private BufferedImage backgroundImage;
         public splashPanel(){
             try {
-                backgroundImage = ImageIO.read(new File("Caterpillar_splash.png"));
+                backgroundImage = ImageIO.read(new File("assets/Caterpillar_splash.png"));
             } catch (IOException e) {
                 e.printStackTrace();
             }

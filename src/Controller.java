@@ -101,11 +101,11 @@ public class Controller extends JPanel {
 
         //load the images
         String numString = Integer.toString(bearing);
-        headIcon = new ImageIcon(numString + ".png");
-        bodyIcon = new ImageIcon("segment.png");
-        String imagePath = "background.png";
+        headIcon = new ImageIcon("assets/" + numString + ".png");
+        bodyIcon = new ImageIcon("assets/segment.png");
+
         try {
-            backgroundImage = ImageIO.read(new File(imagePath));
+            backgroundImage = ImageIO.read(new File("assets/background.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -213,7 +213,7 @@ public class Controller extends JPanel {
 
         //switch to the appropriate image for the direction
         String numString = Integer.toString(bearing);
-        headIcon = new ImageIcon(numString + ".png");
+        headIcon = new ImageIcon("assets/" + numString + ".png");
         caterpillarLabels[0].setIcon(headIcon);
 
         positions = kate.getPos();
