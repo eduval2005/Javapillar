@@ -23,7 +23,7 @@ public class GUI {
     private JLabel title;
     private JButton startButton;
     private JPanel panel;
-    private BufferedImage backgroundImage;
+    //private BufferedImage backgroundImage;
 
     //Default constructor
     public GUI() {

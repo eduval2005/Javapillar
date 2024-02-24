@@ -118,7 +118,10 @@ public class Controller extends JPanel {
 
         try {
             backgroundImage = ImageIO.read(new File("assets/background.png"));
-        } catch (IOException e) {
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("assets/crunch.wav").getAbsoluteFile());
+            leafNoise = AudioSystem.getClip();
+            leafNoise.open(audioInputStream);            
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -297,17 +300,19 @@ public class Controller extends JPanel {
             endLabel.setText("Game over");
             endLabel.setFont(new Font("Arial", Font.BOLD, 54));
             endLabel.setForeground(Color.RED);
-            endLabel.setOpaque(true);
+            endLabel.setOpaque(false);
             add(endLabel);
             endLabel.setBounds(120,60,375,100);
+            endLabel.setVisible(true);
 
         JLabel scoreLabel = new JLabel();  //show the score
             scoreLabel.setText("Score: " + score);
             scoreLabel.setFont(new Font("Arial", Font.BOLD, 54));
             scoreLabel.setForeground(Color.RED);
-            scoreLabel.setOpaque(true);
+            scoreLabel.setOpaque(false);
             add(scoreLabel);
             scoreLabel.setBounds(120,140,375,100);
+            scoreLabel.setVisible(true);
     }
 
     public boolean validityCheck(int headX, int headY, int userHeading, int kateBearing){
@@ -389,14 +394,12 @@ public class Controller extends JPanel {
 
         public void playLeafSound(){
         try {
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("assets/crunch.wav").getAbsoluteFile());
-            leafNoise = AudioSystem.getClip();
-            leafNoise.open(audioInputStream);
+            leafNoise.setFramePosition(0);
             leafNoise.start();
         }
 
         catch(Exception ex) {
-            System.out.println("Error with playing sound.");
+            System.out.println("Error playing leaf sound!");
             ex.printStackTrace();
         }
     }
