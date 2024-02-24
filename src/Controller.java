@@ -292,27 +292,27 @@ public class Controller extends JPanel {
     }
 
     public void gameOver(){
-        for (int x = 0; x < leafNum; x++){  //clean up all these leaves :s
-            leafLabels.get(x).setVisible(false);
-        }
+        //for (int x = 0; x < leafNum; x++){  //clean up all these leaves :s
+        //    leafLabels.get(x).setVisible(false);
+        //}
 
         JLabel endLabel = new JLabel();  //add a game over label
             endLabel.setText("Game over");
             endLabel.setFont(new Font("Arial", Font.BOLD, 54));
-            endLabel.setForeground(Color.RED);
+            endLabel.setForeground(Color.ORANGE);
             endLabel.setOpaque(false);
             add(endLabel);
-            endLabel.setBounds(120,60,375,100);
+            endLabel.setBounds(160,120,375,100);
             endLabel.setVisible(true);
             setComponentZOrder(endLabel, 0);
 
         JLabel scoreLabel = new JLabel();  //show the score
             scoreLabel.setText("Score: " + score);
             scoreLabel.setFont(new Font("Arial", Font.BOLD, 54));
-            scoreLabel.setForeground(Color.RED);
+            scoreLabel.setForeground(Color.ORANGE);
             scoreLabel.setOpaque(false);
             add(scoreLabel);
-            scoreLabel.setBounds(120,140,375,100);
+            scoreLabel.setBounds(195,190,375,100);
             scoreLabel.setVisible(true);
             setComponentZOrder(scoreLabel, 1);
     }
