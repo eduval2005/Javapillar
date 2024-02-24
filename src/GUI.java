@@ -51,7 +51,13 @@ public class GUI {
         gui = new JFrame();
 
         //Sets the details of the JFrame
-        gui.setSize(612,520);
+        String OS = System.getProperty("os.name").toLowerCase();
+        if (OS.contains("win")){
+            gui.setSize(617,520);
+        }
+        else{
+            gui.setSize(602,510);
+        }
         gui.setResizable(false);
 
         gui.setLocationRelativeTo(null);

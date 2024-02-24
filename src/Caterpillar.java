@@ -48,9 +48,6 @@ class Caterpillar
     public void slither(){ //move along in the direction specified by the bearing
 
         int[][] new_pos = new int[segmentCount][2];
-        //System.out.println("************************************************************************");
-        //System.out.print("Bearing: ");
-        //System.out.println(bearing);
 
         switch(bearing){
             case 0: //Heading NORTH!
@@ -77,16 +74,14 @@ class Caterpillar
         for (int index = 1; index < segmentCount; index++){ //move each segment up
             new_pos[index] = position[index-1];
         }
-
+        if (new_pos[getLength()-1] == new_pos[getLength()-2]){
+            new_pos[getLength()-1] = position[getLength()-1];
+        }
         position = new_pos;
     }
 
     public int getLength(){
         return segmentCount;
-    }
-
-    public void setLength(int l){
-        segmentCount = l;
     }
 
     public int[][] getPos(){
@@ -101,5 +96,15 @@ class Caterpillar
         bearing = br;
     }
 
+    public void grow(int[] tailLoc){
+        segmentCount++;
+        int[][] newArray = new int[segmentCount][2];
+        for (int x = 0; x < segmentCount-1; x++){
+            newArray[x] = position[x];
+        }
+        newArray[segmentCount-1] = tailLoc;
+        position = newArray;
+    }
+    
 
 }
