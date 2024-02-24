@@ -17,12 +17,11 @@ public class Controller extends JPanel {
         private Timer timer;
 
         private int userHeading = 1;
-        int initBearing = 1;
-        int startX = 300;
-        int startY = 300;
-        int segDistance = 30;
-        int segCount = 4;
-                
+        private int initBearing = 1;
+        private int startX = 300;
+        private int startY = 300;
+        private int segDistance = 30;
+        private int segCount = 4;
 
         private int spritePxls = 32;  //32 x 32 icons in 30x30 pixel grid gives slight overlap
 
@@ -40,6 +39,7 @@ public class Controller extends JPanel {
 
         private int score = 0;
         private int level = 1;
+        private boolean gameOn = false;
 
         private String[] backgrounds = {"assets/barren.png", "assets/patchy-grass.png", "assets/grassy.png", "assets/grassy-leafy.png", "assets/jungle.png"};
         private BufferedImage backgroundImage;
@@ -68,7 +68,8 @@ public class Controller extends JPanel {
                 timer.stop();
             }
             else{
-                timer.start();
+                userHeading = kate.getBearing();
+                if (gameOn){timer.start();}
             }
         }
     }
@@ -76,29 +77,27 @@ public class Controller extends JPanel {
     class ResetAction extends AbstractAction{
         public void actionPerformed(ActionEvent e){
             timer.stop();
-            level = 1;
-            score =0;
+
             FPS = 2;
             timer = new Timer(1000/FPS, new ActionListener() {
                 public void actionPerformed(ActionEvent evt) {
                     animate();}});
-
+   
             for (int x = 0; x < leafNum; x++){  //clean up all these leaves :s
                 leafLabels.get(x).setVisible(false);
             }
             for (int x = 0; x < kate.getLength(); x++){
                 caterpillarLabels[x].setVisible(false);
             }
+
             leafNum = leafStartNum;
-            
-            try{
-                backgroundImage = ImageIO.read(new File(backgrounds[level-1]));}
-            catch(Exception ex){
-                System.out.println("Error loading background!");}
             
             setupNewGame();
             repaint();
-            timer.start();
+
+            level = 1;
+            score = 0;
+            levelStart();
         }
     }
 
@@ -148,15 +147,12 @@ public class Controller extends JPanel {
         leafIcon = new ImageIcon("assets/leaf.png");
 
         try {
-            backgroundImage = ImageIO.read(new File(backgrounds[0]));
             AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("assets/crunch.wav").getAbsoluteFile());
             leafNoise = AudioSystem.getClip();
             leafNoise.open(audioInputStream);            
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
-        setupNewGame();
 
         pauseAction = new PauseAction();
         resetAction = new ResetAction();
@@ -196,7 +192,9 @@ public class Controller extends JPanel {
         timer = new Timer(1000/FPS, new ActionListener() {
                                 public void actionPerformed(ActionEvent evt) {
                                     animate();}});
-        timer.start();
+        
+        setupNewGame();
+        levelStart();
 
     }
 
@@ -287,7 +285,6 @@ public class Controller extends JPanel {
         //Check for head/body collision!!
         for (int x = 1; x < kate.getLength(); x++){
             if ((headPos[0] == positions[x][0]) && (headPos[1] == positions[x][1])) { //collision!
-                timer.stop();
                 caterpillarLabels[0].setIcon(collisionIcon);
                 gameOver();
             }
@@ -296,40 +293,17 @@ public class Controller extends JPanel {
         //check if leaves are left!
         if (leafNum <= 0){
             timer.stop();
-            level++;
-            try{
-                backgroundImage = ImageIO.read(new File(backgrounds[level-1]));}
-            catch(Exception e){
-                System.out.println("Error loading background!");}
 
             FPS++;
-            leafNum = level * leafStartNum;
-            generateLeaves(leafNum);
-            JLabel levelMarker = new JLabel();
-            levelMarker.setText("Level " + level);
-            levelMarker.setFont(new Font("Arial", Font.BOLD, 54));
-            levelMarker.setForeground(Color.ORANGE);
-            levelMarker.setOpaque(false);
-            add(levelMarker);
-            levelMarker.setBounds(175,120,375,100);
-            levelMarker.setVisible(true);
-            setComponentZOrder(levelMarker, 0);
-            repaint();
-
             timer = new Timer(1000/FPS, new ActionListener() {
                 public void actionPerformed(ActionEvent evt) {
                     animate();}});
 
-            ActionListener listener = new ActionListener(){
-                public void actionPerformed(ActionEvent event){
-                    levelMarker.setVisible(false);
-                    timer.start();
-                }
-            };
-    
-            Timer t = new Timer(3000, listener);
-            t.setRepeats(false);
-            t.start();
+            leafNum = level * leafStartNum;
+            generateLeaves(leafNum);
+
+            level++;
+            levelStart();
         }
 
     }
@@ -337,6 +311,7 @@ public class Controller extends JPanel {
     public void setupNewGame(){
         removeAll();
         super.removeAll();
+
         kate = new Caterpillar(startX, startY, segDistance, segCount, initBearing); //x, y, segDistance, segCount, bearing
         caterpillarLabels = new JLabel[segCount];
         int[][] positions = kate.getPos(); //stores each body segment's location
@@ -354,10 +329,40 @@ public class Controller extends JPanel {
         generateLeaves(leafStartNum);
     }
 
+    public void levelStart(){
+        try{
+            backgroundImage = ImageIO.read(new File(backgrounds[level-1]));}
+        catch(Exception e){
+            System.out.println("Error loading background!");}
+
+        JLabel levelMarker = new JLabel();
+            levelMarker.setText("Level " + level);
+            levelMarker.setFont(new Font("Arial", Font.BOLD, 54));
+            levelMarker.setForeground(Color.ORANGE);
+            levelMarker.setOpaque(false);
+            add(levelMarker);
+            levelMarker.setBounds(200,115,375,100);
+            levelMarker.setVisible(true);
+            setComponentZOrder(levelMarker, 0);
+        repaint();
+
+        ActionListener listener = new ActionListener(){
+            public void actionPerformed(ActionEvent event){
+                levelMarker.setVisible(false);
+                userHeading = kate.getBearing();
+                gameOn = true;
+                timer.start();
+            }
+        };
+
+        Timer t = new Timer(3000, listener);
+        t.setRepeats(false);
+        t.start();
+    }
+
     public void gameOver(){
-        //for (int x = 0; x < leafNum; x++){  //clean up all these leaves :s
-        //    leafLabels.get(x).setVisible(false);
-        //}
+        timer.stop();
+        gameOn = false;
 
         JLabel endLabel = new JLabel();  //add a game over label
             endLabel.setText("Game over");
