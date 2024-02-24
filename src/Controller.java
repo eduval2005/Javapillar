@@ -304,6 +304,7 @@ public class Controller extends JPanel {
             add(endLabel);
             endLabel.setBounds(120,60,375,100);
             endLabel.setVisible(true);
+            setComponentZOrder(endLabel, 0);
 
         JLabel scoreLabel = new JLabel();  //show the score
             scoreLabel.setText("Score: " + score);
@@ -313,6 +314,7 @@ public class Controller extends JPanel {
             add(scoreLabel);
             scoreLabel.setBounds(120,140,375,100);
             scoreLabel.setVisible(true);
+            setComponentZOrder(scoreLabel, 1);
     }
 
     public boolean validityCheck(int headX, int headY, int userHeading, int kateBearing){
