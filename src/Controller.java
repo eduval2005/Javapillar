@@ -10,7 +10,7 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 
 import java.io.File;
-import java.io.IOException;
+//import java.io.IOException;
 
 public class Controller extends JPanel {
         private int FPS = 2;
@@ -35,6 +35,7 @@ public class Controller extends JPanel {
         private int score;
         private int level = 1;
 
+        private String[] backgrounds = {"assets/barren.png", "assets/patchy-grass.png", "assets/grassy.png", "assets/grassy-leafy.png", "assets/jungle.png"};
         private BufferedImage backgroundImage;
         private int gameAreaX = 600;  //this is 20 divisions of 30 pixels each
         private int gameAreaY = 510;  //this is 17 divisions of 30 pixels each
@@ -117,7 +118,7 @@ public class Controller extends JPanel {
         leafIcon = new ImageIcon("assets/leaf.png");
 
         try {
-            backgroundImage = ImageIO.read(new File("assets/background.png"));
+            backgroundImage = ImageIO.read(new File(backgrounds[0]));
             AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("assets/crunch.wav").getAbsoluteFile());
             leafNoise = AudioSystem.getClip();
             leafNoise.open(audioInputStream);            
@@ -139,7 +140,6 @@ public class Controller extends JPanel {
             add(caterpillarLabels[x]);
         }
 
-        //leafPositions = new int[leafNum][2];
         generateLeaves(leafNum);
 
         pauseAction = new PauseAction();
@@ -280,6 +280,14 @@ public class Controller extends JPanel {
         if (leafNum <= 0){
             timer.stop();
             level++;
+            try{
+                backgroundImage = ImageIO.read(new File(backgrounds[level-1]));
+                //paintComponents(getGraphics());
+                repaint();
+            }
+            catch(Exception e){
+                System.out.println("Error loading background!");
+            }
             FPS++;
             leafNum = level * leafStartNum;
             generateLeaves(leafNum);
