@@ -92,8 +92,7 @@ public class Controller extends JPanel {
 
             leafNum = leafStartNum;
             
-            setupNewGame();
-            repaint();
+            resetCaterpillar();
 
             level = 1;
             score = 0;
@@ -193,7 +192,7 @@ public class Controller extends JPanel {
                                 public void actionPerformed(ActionEvent evt) {
                                     animate();}});
         
-        setupNewGame();
+        resetCaterpillar();
         levelStart();
 
     }
@@ -293,22 +292,16 @@ public class Controller extends JPanel {
         //check if leaves are left!
         if (leafNum <= 0){
             timer.stop();
-
             FPS++;
-            timer = new Timer(1000/FPS, new ActionListener() {
-                public void actionPerformed(ActionEvent evt) {
-                    animate();}});
-
-            leafNum = level * leafStartNum;
-            generateLeaves(leafNum);
-
             level++;
             levelStart();
         }
 
+        repaint();
+
     }
 
-    public void setupNewGame(){
+    public void resetCaterpillar(){
         removeAll();
         super.removeAll();
 
@@ -326,7 +319,6 @@ public class Controller extends JPanel {
             caterpillarLabels[x].setOpaque(false);
             add(caterpillarLabels[x]);
         }
-        generateLeaves(leafStartNum);
     }
 
     public void levelStart(){
@@ -334,6 +326,13 @@ public class Controller extends JPanel {
             backgroundImage = ImageIO.read(new File(backgrounds[level-1]));}
         catch(Exception e){
             System.out.println("Error loading background!");}
+
+        timer = new Timer(1000/FPS, new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                animate();}});
+
+        leafNum = level * leafStartNum;
+        generateLeaves(leafNum);
 
         JLabel levelMarker = new JLabel();
             levelMarker.setText("Level " + level);
