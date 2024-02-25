@@ -297,8 +297,6 @@ public class Controller extends JPanel {
             levelStart();
         }
 
-        repaint();
-
     }
 
     public void resetCaterpillar(){
