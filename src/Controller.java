@@ -41,7 +41,7 @@ public class Controller extends JPanel {
         private int level = 1;
         private boolean gameOn = false;
 
-        private String[] backgrounds = {"assets/barren.png", "assets/patchy-grass.png", "assets/grassy.png", "assets/grassy-leafy.png", "assets/jungle.png"};
+        private String[] backgrounds = {"assets/barren.png", "assets/patchy-grass.png", "assets/grassy.png", "assets/grassy-leafy.png", "assets/jungle.png", "assets/dense-jungle.png"};
         private BufferedImage backgroundImage;
         private int gameAreaX = 600;  //this is 20 divisions of 30 pixels each
         private int gameAreaY = 510;  //this is 17 divisions of 30 pixels each
