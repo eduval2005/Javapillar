@@ -41,7 +41,8 @@ public class Controller extends JPanel {
         private int level = 1;
         private boolean gameOn = false;
 
-        private String[] backgrounds = {"assets/barren.png", "assets/patchy-grass.png", "assets/grassy.png", "assets/grassy-leafy.png", "assets/jungle.png", "assets/dense-jungle.png"};
+        private String[] backgrounds = {"assets/barren.png", "assets/patchy-grass.png", "assets/grassy.png",
+                                         "assets/grassy-leafy.png", "assets/jungle.png", "assets/dense-jungle.png"};
         private BufferedImage backgroundImage;
         private int gameAreaX = 600;  //this is 20 divisions of 30 pixels each
         private int gameAreaY = 510;  //this is 17 divisions of 30 pixels each
@@ -292,9 +293,14 @@ public class Controller extends JPanel {
         //check if leaves are left!
         if (leafNum <= 0){
             timer.stop();
-            FPS++;
-            level++;
-            levelStart();
+            if (score < 100){
+                FPS++;
+                level++;
+                levelStart();
+            }
+            else {  //declare a winner
+                winScreen();
+            }
         }
 
     }
@@ -381,6 +387,36 @@ public class Controller extends JPanel {
             scoreLabel.setVisible(true);
             setComponentZOrder(scoreLabel, 1);
     }
+
+    public void winScreen(){
+        timer.stop();
+        try{
+            backgroundImage = ImageIO.read(new File("assets/cottage.png"));}
+        catch(Exception e){
+            System.out.println("Error loading background!");}
+
+        JLabel winLabel = new JLabel();  //add a game over label
+            winLabel.setText("You win!");
+            winLabel.setFont(new Font("Arial", Font.BOLD, 54));
+            winLabel.setForeground(Color.ORANGE);
+            winLabel.setOpaque(false);
+            add(winLabel);
+            winLabel.setBounds(160,120,375,100);
+            winLabel.setVisible(true);
+            setComponentZOrder(winLabel, 0);
+        
+        JLabel scoreLabel = new JLabel();  //show the score
+            scoreLabel.setText("Score: " + score);
+            scoreLabel.setFont(new Font("Arial", Font.BOLD, 54));
+            scoreLabel.setForeground(Color.ORANGE);
+            scoreLabel.setOpaque(false);
+            add(scoreLabel);
+            scoreLabel.setBounds(195,190,375,100);
+            scoreLabel.setVisible(true);
+            setComponentZOrder(scoreLabel, 1);
+        repaint();
+    }
+
 
     public boolean validityCheck(int headX, int headY, int userHeading, int kateBearing){
         switch(userHeading){
