@@ -74,9 +74,9 @@ class Caterpillar
         for (int index = 1; index < segmentCount; index++){ //move each segment up
             new_pos[index] = position[index-1];
         }
-        if (new_pos[getLength()-1] == new_pos[getLength()-2]){
-            new_pos[getLength()-1] = position[getLength()-1];
-        }
+        //if (new_pos[getLength()-1] == new_pos[getLength()-2]){
+        //    new_pos[getLength()-1] = position[getLength()-1];
+        //}
         position = new_pos;
     }
 
