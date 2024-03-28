@@ -13,7 +13,7 @@ import java.io.File;
 //import java.io.IOException;
 
 public class Controller extends JPanel {
-    private int FPS = 2;
+    private int FPS = 5;
     private Timer timer;
 
     private int userHeading = 1;
@@ -80,7 +80,7 @@ public class Controller extends JPanel {
         public void actionPerformed(ActionEvent e) {
             timer.stop();
 
-            FPS = 2;
+            FPS = 5;
             timer = new Timer(1000 / FPS, new ActionListener() {
                 public void actionPerformed(ActionEvent evt) {
                     animate();
