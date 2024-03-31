@@ -13,7 +13,10 @@ import java.io.File;
 //import java.io.IOException;
 
 public class Controller extends JPanel {
-    private int FPS = 5;
+    
+    JLabel scoreGUI = new JLabel();
+    
+    private int FPS = 2;
     private Timer timer;
 
     private int userHeading = 1;
@@ -22,30 +25,32 @@ public class Controller extends JPanel {
     private int startY = 300;
     private int segDistance = 30;
     private int segCount = 4;
-
-    private int spritePxls = 32; // 32 x 32 icons in 30x30 pixel grid gives slight overlap
+    private int spritePxls = 32;  //32 x 32 icons in 30x30 pixel grid gives slight overlap
 
     private JLabel[] caterpillarLabels;
     private ImageIcon[] headIcon;
     private ImageIcon bodyIcon;
     private ImageIcon collisionIcon;
 
+    private int score = 0;
+    private int tempScore = 0;
+    private int level = 1;
+    private boolean gameOn = false;
+
     private ArrayList<JLabel> leafLabels;
     private ArrayList<int[]> leafPositions;
     private int leafNum = 5;
     private int leafStartNum = 5;
     private ImageIcon leafIcon;
+    private ImageIcon slowLeafIcon;
     private Clip leafNoise;
+    private LeafManager leafManager = new LeafManager(leafNum);
 
-    private int score = 0;
-    private int level = 1;
-    private boolean gameOn = false;
-
-    private String[] backgrounds = { "assets/barren.png", "assets/patchy-grass.png", "assets/grassy.png",
-            "assets/grassy-leafy.png", "assets/jungle.png", "assets/dense-jungle.png" };
+    private String[] backgrounds = {"assets/barren.png", "assets/patchy-grass.png", "assets/grassy.png",
+                                         "assets/grassy-leafy.png", "assets/jungle.png", "assets/dense-jungle.png"};
     private BufferedImage backgroundImage;
-    private int gameAreaX = 600; // this is 20 divisions of 30 pixels each
-    private int gameAreaY = 510; // this is 17 divisions of 30 pixels each
+    private int gameAreaX = 600;  //this is 20 divisions of 30 pixels each 
+    private int gameAreaY = 480;  //this is 16 divisions of 30 pixels each
 
     public JPanel controllerPanel;
     Action rightAction;
@@ -80,8 +85,9 @@ public class Controller extends JPanel {
         public void actionPerformed(ActionEvent e) {
             timer.stop();
 
-            FPS = 5;
-            timer = new Timer(1000 / FPS, new ActionListener() {
+            FPS = 2;
+            timer = new Timer(1000/FPS, new ActionListener() {
+
                 public void actionPerformed(ActionEvent evt) {
                     animate();
                 }
@@ -148,6 +154,7 @@ public class Controller extends JPanel {
         bodyIcon = new ImageIcon("assets/segment.png");
         collisionIcon = new ImageIcon("assets/collision.png");
         leafIcon = new ImageIcon("assets/leaf.png");
+        slowLeafIcon = new ImageIcon("assets/slowleaf.png");
 
         try {
             AudioInputStream audioInputStream = AudioSystem
@@ -266,12 +273,30 @@ public class Controller extends JPanel {
         positions = kate.getPos();
         int[] headPos = positions[0];
 
-        // check for leaf collisions
-        for (int x = 0; x < leafNum; x++) {
+        //check for leaf collisions
+        for (int x = 0; x < leafNum; x++){
             int[] leafPos = leafPositions.get(x);
             if ((leafPos[0] == headPos[0]) && (leafPos[1] == headPos[1])) {
                 // System.out.println("Got leaf at: " + leafPos[0] + ", " + leafPos[1]);
                 playLeafSound();
+                if (leafManager.leafGet(x).getType().equals("slowDown")) {
+                    timer.stop();
+                    timer = new Timer(2000/FPS, new ActionListener() {
+                        public void actionPerformed(ActionEvent evt) {
+                            animate();}});
+                    timer.start();
+                    tempScore = score;
+                    System.out.println("Slowing down...");
+                }
+                if (tempScore != score) {
+                    timer.stop();
+                    timer = new Timer(1000/FPS, new ActionListener() {
+                        public void actionPerformed(ActionEvent evt) {
+                            animate();}});
+                    timer.start();
+                    System.out.println("Back to normal.");
+                    tempScore = score;
+                }
                 leafPositions.remove(x);
                 leafLabels.get(x).setVisible(false);
                 leafLabels.remove(x);
@@ -279,6 +304,14 @@ public class Controller extends JPanel {
                 addSegmentLabel(lastSegmentLocation);
                 leafNum--;
                 score++;
+                scoreGUI.setText("Score: " + score);
+                scoreGUI.setFont(new Font("Arial", Font.BOLD, 36));
+                scoreGUI.setBounds(220, 10, 300, 50);
+                scoreGUI.setOpaque(false);
+                scoreGUI.setForeground(Color.WHITE);
+                add(scoreGUI);
+                leafManager.reorganize(x);
+                System.out.println("Ate leaf " + x);
                 break;
             }
         }
@@ -348,8 +381,16 @@ public class Controller extends JPanel {
             }
         });
 
+        
         leafNum = level * leafStartNum;
         generateLeaves(leafNum);
+
+        scoreGUI.setText("Score: " + score);
+        scoreGUI.setFont(new Font("Arial", Font.BOLD, 36));
+        scoreGUI.setBounds(220, 10, 300, 50);
+        scoreGUI.setOpaque(false);
+        scoreGUI.setForeground(Color.WHITE);
+        add(scoreGUI);
 
         JLabel levelMarker = new JLabel();
         levelMarker.setText("Level " + level);
@@ -400,6 +441,8 @@ public class Controller extends JPanel {
         scoreLabel.setVisible(true);
         setComponentZOrder(scoreLabel, 1);
 
+        scoreGUI.setBounds(0,0,0,0);
+
         JButton startagainButton = new JButton("Start Again");
         startagainButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -441,15 +484,13 @@ public class Controller extends JPanel {
         repaint();
     }
 
-    public boolean validityCheck(int headX, int headY, int userHeading, int kateBearing) {
-        switch (userHeading) {
-            case 0: // heading NORTH
-                if ((headY > 0) && (kateBearing != 2)) { // check for collision before moving
-                    return true;
-                } else {
-                    return false;
-                }
-
+public boolean validityCheck(int headX, int headY, int userHeading, int kateBearing){
+        switch(userHeading){
+            case 0: //heading NORTH
+                if ((headY > 60) && (kateBearing != 2)){                                //check for collision before moving
+                    return true;}
+                else {
+                    return false;}
             case 1:
                 if ((headX < (gameAreaX - spritePxls)) && (kateBearing != 3)) {
                     return true;
@@ -458,11 +499,11 @@ public class Controller extends JPanel {
                 }
 
             case 2:
-                if ((headY + 30 < (gameAreaY - spritePxls)) && (kateBearing != 0)) {
-                    return true;
-                } else {
-                    return false;
-                }
+
+                if ((headY - 60 < (gameAreaY - spritePxls)) && (kateBearing != 0)){
+                    return true;}
+                else {
+                    return false;}
 
             case 3:
                 if ((headX > 0) && (kateBearing != 1)) {
@@ -488,7 +529,9 @@ public class Controller extends JPanel {
         caterpillarLabels = newArray;
     }
 
-    public void generateLeaves(int leafNum) {
+
+    public void generateLeaves(int leafNum){
+        
         leafLabels = new ArrayList<JLabel>(leafNum);
         leafPositions = new ArrayList<int[]>(leafNum);
 
@@ -496,15 +539,17 @@ public class Controller extends JPanel {
         int rand_x;
         int rand_y;
 
-        for (int leaf = 0; leaf < leafNum; leaf++) {
-            while (true) { // loop until valid x, y
+        leafManager = new LeafManager(leafNum);
+        
+        for (int leaf = 0; leaf < leafNum; leaf++){
+            while(true){  //loop until valid x, y
                 boolean duped = false;
-                rand_x = random.nextInt(gameAreaX / 30) * 30;
-                rand_y = random.nextInt((gameAreaY - 30) / 30) * 30;
-                for (int[] leafPos : leafPositions) {
-                    if ((rand_x == leafPos[0]) && (rand_y == leafPos[1])) { // check for duplicates!!
+                rand_x = random.nextInt(gameAreaX/30) * 30;
+                rand_y = (random.nextInt((gameAreaY)/30) * 30) + 60;
+                for (int[] leafPos : leafPositions){
+                    if ((rand_x == leafPos[0]) && (rand_y == leafPos[1]) || (rand_y < 3)){  //check for duplicates!!
                         duped = true;
-                    }
+                    } 
                 }
                 if (duped) {
                     continue;
@@ -513,14 +558,25 @@ public class Controller extends JPanel {
                 }
             }
 
-            int[] newPos = { rand_x, rand_y };
-            JLabel newLeaf = new JLabel(leafIcon);
+
+            int[] newPos = {rand_x, rand_y};
+            JLabel newLeaf = new JLabel();
+            Leaf leafObject = new Leaf(leaf, level);
+            switch (leafObject.getType()) {
+                case "default":
+                newLeaf.setIcon(leafIcon);
+                break;
+                case "slowDown":
+                newLeaf.setIcon(slowLeafIcon);
+                break;
+            }
+            leafManager.leafAdd(leafObject);
+            System.out.println(leaf + ", " + leafObject.getType() + ", [" + (rand_x/30 + 1) + ", " + (18 - rand_y/30) + "]");
             add(newLeaf);
             newLeaf.setBounds(rand_x, rand_y, spritePxls, spritePxls);
             newLeaf.setOpaque(false);
             leafLabels.add(newLeaf);
             leafPositions.add(newPos);
-
         }
     }
 
@@ -535,5 +591,6 @@ public class Controller extends JPanel {
             e.printStackTrace();
         }
     }
-
 }
+
+
