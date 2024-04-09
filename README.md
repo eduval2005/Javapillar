@@ -10,6 +10,9 @@ The workspace contains two folders by default, where:
 - `lib`: the folder to maintain dependencies
 - `assests`: the folde contains all our images and  other assets that lets us run JavaPillar
 
+- How to Start playing?
+- Run GUI.java and enjoy the game
+
 Meanwhile, the compiled output files will be generated in the `bin` folder by default.
 
 
