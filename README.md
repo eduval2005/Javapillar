@@ -8,6 +8,6 @@ The workspace contains two folders by default, where:
 
 - `src`: the folder to maintain sources
 - `lib`: the folder to maintain dependencies
-- `assests`: the folde contains all our images and  other assets that lets us run JavaPillar
+- `assests`: the folder contains all our images and other assets that lets us run JavaPillar
 
 Meanwhile, the compiled output files will be generated in the `bin` folder by default.
